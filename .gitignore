@@ -1,0 +1,9 @@
+.gradle
+/build/
+/lib/
+readme.txt
+settings.gradle
+/gradle/
+.idea
+gradlew*
+
