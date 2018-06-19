@@ -10,7 +10,15 @@ public class CPUMonitor implements ICPUMonitor {
     private static final int IDLE_COLUMN_INDEX = 12;
     private static final int CORE_INDEX = 2;
 
-    private Map<String, Double> getCPUUsageList() throws IOException {
+    private double getIdleValue(String[] coloumns) throws NumberFormatException, ArrayIndexOutOfBoundsException {
+        return Double.parseDouble(String.format("%.2f", 100 - Double.parseDouble(coloumns[IDLE_COLUMN_INDEX])));
+    }
+
+    private String getCoreName(String[] coloumns) throws ArrayIndexOutOfBoundsException {
+        return coloumns[CORE_INDEX];
+    }
+
+    private Map<String, Double> getCPUUsageList() throws IOException, ArrayIndexOutOfBoundsException, NumberFormatException {
 
         Map<String, Double> cpuUsageList = new HashMap<>();
 
@@ -28,8 +36,7 @@ public class CPUMonitor implements ICPUMonitor {
 
                 while ((line = br.readLine()) != null && !line.isEmpty()) {
                     String[] coloumns = line.replaceAll(",", ".").split("\\s+");
-                    double idleValue = Double.parseDouble(coloumns[IDLE_COLUMN_INDEX]);
-                    cpuUsageList.put(coloumns[CORE_INDEX], Double.parseDouble(String.format("%.2f", idleValue)));
+                    cpuUsageList.put(getCoreName(coloumns), getIdleValue(coloumns));
                 }
             } catch (IOException e) {
                 throw e;
